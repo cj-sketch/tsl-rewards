@@ -7,10 +7,11 @@ services:
     container_name: tsl-rewards
     restart: unless-stopped
 
-    # наружу — только этот порт (host:container).
-    # поменять host-порт: TSL_REWARDS_PORT=9000 docker compose up -d
+    # бинд ТОЛЬКО на loopback — наружу не светим, ходит только локальный nginx-фронт.
+    # фронт-nginx проксирует tsl-skills.com → 127.0.0.1:8080.
+    # поменять порт: TSL_REWARDS_PORT=9000 docker compose up -d
     ports:
-      - "${TSL_REWARDS_PORT:-8080}:8080"
+      - "127.0.0.1:${TSL_REWARDS_PORT:-8080}:8080"
 
     # изолированная bridge-сеть только под этот проект
     networks:
