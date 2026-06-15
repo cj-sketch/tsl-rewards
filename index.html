@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSL · Сценарии, Скиллы и Артефакты</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @font-face { font-family:'TTFirs'; src:url('assets/TTFirsNeue-Regular.ttf') format('truetype'); font-weight:400; font-display:swap; }
+  @font-face { font-family:'TTFirs'; src:url('assets/TTFirsNeue-Medium.ttf') format('truetype'); font-weight:500; font-display:swap; }
+  @font-face { font-family:'TTFirs'; src:url('assets/TTFirsNeue-DemiBold.ttf') format('truetype'); font-weight:700; font-display:swap; }
+  :root { color-scheme: dark; --bg:#091321; --blue:#005EB8; --teal:#00B2A9; --light:#E7EBF2; }
+  * { font-family:'TTFirs', -apple-system, BlinkMacSystemFont, sans-serif; }
+  html { scroll-behavior:smooth; }
+  body { background:#091321; }
+  .mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+  .glow { background: radial-gradient(70% 60% at 50% -10%, rgba(0,94,184,.20), transparent 72%); }
+  /* editorial headline gradient — softer, paper-to-blue */
+  .grad { background:linear-gradient(106deg,#fff 0%,#E7EBF2 38%,#5fb3e6 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .teal { color:#00B2A9; }
+  .blue { color:#1c8fd0; }
+  .num { background:linear-gradient(135deg,#005EB8,#00B2A9); }
+  /* hairline rule */
+  .hair { height:1px; background:linear-gradient(90deg, rgba(0,94,184,.45), rgba(0,178,169,.20) 55%, transparent); }
+  .hair-soft { height:1px; background:rgba(231,235,242,.07); }
+  /* editorial accent: a short bold colored tick instead of boxes */
+  .tick { display:inline-block; width:2.5rem; height:3px; border-radius:99px; background:linear-gradient(90deg,#005EB8,#00B2A9); }
+  /* kicker / eyebrow */
+  .kicker { letter-spacing:.32em; text-transform:uppercase; }
+  /* large display numerals */
+  .display { font-weight:700; letter-spacing:-.02em; line-height:.92; }
+  .lift { transition: color .2s ease, opacity .2s ease, transform .25s ease; }
+  /* tier text-color treatment (no boxes) */
+  .t-diamond { color:#7dd3fc; text-shadow:0 0 22px rgba(56,189,248,.35); }
+  .t-gold    { color:#fcd34d; text-shadow:0 0 18px rgba(251,191,36,.30); }
+  .t-silver  { color:#e2e8f0; }
+  .t-bronze  { color:#fdba74; }
+  /* leaderboard row tint — extremely subtle wash, no border boxes */
+  .row-diamond { background:linear-gradient(90deg,rgba(56,189,248,.07),transparent 60%); }
+  .row-gold    { background:linear-gradient(90deg,rgba(251,191,36,.055),transparent 60%); }
+  .row-silver  { background:linear-gradient(90deg,rgba(226,232,240,.04),transparent 60%); }
+  .row-bronze  { background:linear-gradient(90deg,rgba(217,119,6,.05),transparent 60%); }
+  .lb-row:hover { background:rgba(231,235,242,.035); }
+  ::selection { background: rgba(0,94,184,.4); }
+  /* drop-cap-ish lead */
+  .lead { font-weight:400; }
+  /* catalog filter chips */
+  .cat-chip{ font-size:12px; color:#7e92a8; border:1px solid rgba(231,235,242,.1); border-radius:999px; padding:5px 14px; transition:color .2s, background .2s, border-color .2s; cursor:pointer; }
+  .cat-chip:hover{ color:#cdd9e6; }
+  .cat-chip.chip-on{ color:#cdd9e6; background:rgba(28,143,208,.14); border-color:rgba(28,143,208,.3); }
+</style>
+</head>
+<body class="text-[#aebfd0] antialiased">
+
+<!-- TELEGRAM GATE -->
+<div id="tg-gate" class="fixed inset-0 z-[100] bg-[#091321] flex items-center justify-center px-6">
+  <div class="absolute inset-0 glow"></div>
+  <div class="relative text-center max-w-md w-full">
+    <img src="assets/Logo_TSL_dark_sm.png" alt="TSL" class="h-14 w-auto mx-auto mb-12">
+    <div class="kicker text-[11px] text-[#5fb3e6] mb-5 mono">Доступ для команды</div>
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-5 tracking-tight leading-[1.02]">Вход через рабочий Telegram</h1>
+    <p class="text-base text-[#8aa0b8] mb-10 max-w-sm mx-auto leading-relaxed">Доступ — только команде TSL: рабочие Telegram-аккаунты из списка CEO.</p>
+    <button onclick="tgEnter()" class="inline-flex items-center justify-center gap-2.5 bg-[#2AABEE] hover:bg-[#229ED9] text-white font-semibold rounded-full px-8 py-3.5 transition">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0C5.346 0 0 5.346 0 11.944s5.346 11.944 11.944 11.944 11.944-5.346 11.944-11.944S18.542 0 11.944 0zm5.84 8.13l-1.966 9.27c-.146.658-.537.818-1.084.508l-2.996-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.658-.643.135-.953l11.57-4.461c.537-.194 1.006.13.825.952z"/></svg>
+      Войти через Telegram
+    </button>
+    <p class="text-[11px] text-[#3f5168] mt-6 mono kicker">демо-вход · авторизация на деплое</p>
+  </div>
+</div>
+<script>
+  function tgEnter(){ document.getElementById('tg-gate').style.display='none'; try{sessionStorage.setItem('tg_ok','1')}catch(e){} }
+  try{ if(sessionStorage.getItem('tg_ok')==='1') document.getElementById('tg-gate').style.display='none'; }catch(e){}
+</script>
+
+<!-- NAV -->
+<nav class="sticky top-0 z-50 backdrop-blur-xl bg-[#091321]/80 border-b border-white/[.06]">
+  <div class="max-w-5xl mx-auto px-6 sm:px-10 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3.5">
+      <img src="assets/Logo_TSL_dark_sm.png" alt="TSL" class="h-6 w-auto">
+      <span class="text-[#7e92a8] text-[11px] kicker font-medium hidden sm:inline mono">Сценарии · Скиллы · Артефакты</span>
+    </a>
+    <div class="hidden md:flex items-center gap-7 text-[13px] text-[#7e92a8]">
+      <a href="#lb-scen" class="hover:text-[#1c8fd0] transition">Лидерборды</a>
+      <a href="#catalog" class="hover:text-[#1c8fd0] transition">Каталог</a>
+      <a href="#how" class="hover:text-[#1c8fd0] transition">Как работает</a>
+      <a href="#rewards" class="hover:text-[#1c8fd0] transition">Премии</a>
+      <a href="#base" class="hover:text-[#1c8fd0] transition">База про агентов</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header id="top" class="relative glow">
+  <div class="relative max-w-5xl mx-auto px-6 sm:px-10 pt-36 pb-28 md:pt-44 md:pb-36">
+    <div class="inline-flex items-center gap-3 text-[12px] font-medium text-[#9fc4ea] mb-10 kicker mono">
+      <span class="w-1.5 h-1.5 rounded-full bg-[#00B2A9] animate-pulse"></span>
+      AI Native transformation. Together
+    </div>
+    <h1 class="display text-6xl md:text-8xl tracking-tight max-w-4xl">
+      <span class="grad">Сценарии,<br>Скиллы<br>и Артефакты</span>
+    </h1>
+  </div>
+</header>
+
+<!-- PRINCIPLE LEAD -->
+<section id="principle" class="max-w-5xl mx-auto px-6 sm:px-10 pt-2 pb-6">
+  <div class="hair mb-10"></div>
+  <p class="display text-2xl md:text-4xl text-white leading-tight max-w-4xl">Респект — за всё на досках. <span class="teal">$100</span> — только за скилл или артефакт, которым <span class="text-white">реально пользуется команда</span>.</p>
+  <p class="lead text-base md:text-lg text-[#637890] mt-5 max-w-2xl">≥10 вызовов не из любознательности, в течение месяца после деплоя.</p>
+</section>
+
+<!-- LEADERBOARD: SCENARIOS -->
+<section id="lb-scen" class="max-w-5xl mx-auto px-6 sm:px-10 py-24 md:py-32">
+  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">01 — Лидерборд сценариев</div>
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+    <h2 class="display text-4xl md:text-6xl text-white max-w-xl">Респект-доска</h2>
+    <span class="kicker text-[10px] text-[#9fc4ea] mono">из маркетплейса · 14.06.2026</span>
+  </div>
+  <p class="lead text-lg md:text-xl text-[#8aa0b8] max-w-2xl mb-14 leading-snug">Сколько личных автоматизаций у каждого. Распределение честное — должность не влияет.</p>
+
+  <div class="hidden sm:grid grid-cols-[4.5rem_1fr_9rem] gap-4 pb-4 kicker text-[10px] text-[#54677c] mono border-b border-white/[.07]">
+    <div>Тир</div><div>Сотрудник</div><div class="text-right">Сценариев</div>
+  </div>
+  <div id="lb-scen-rows"></div>
+</section>
+
+<!-- LEADERBOARD: SKILLS & ARTIFACTS -->
+<section id="lb-money" class="max-w-5xl mx-auto px-6 sm:px-10 py-24 md:py-32">
+  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">02 — Лидерборд скиллов и артефактов</div>
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+    <h2 class="display text-4xl md:text-6xl text-white max-w-2xl">Отдано команде</h2>
+    <span class="kicker text-[10px] text-[#9fc4ea] mono">скиллы — факт</span>
+  </div>
+  <p class="lead text-lg md:text-xl text-[#8aa0b8] max-w-2xl mb-14 leading-snug">Используется командой (≥10 вызовов) → <b class="teal font-bold">$100</b> в колонку «Начислено».</p>
+
+  <div class="hidden sm:grid grid-cols-[4.5rem_1fr_4.5rem_4.5rem_5.5rem_6.5rem] gap-4 pb-4 kicker text-[10px] text-[#54677c] mono border-b border-white/[.07]">
+    <div>Тир</div><div>Сотрудник</div><div class="text-center">Скиллы</div><div class="text-center">Артеф.</div><div class="text-center">Adoption</div><div class="text-right">Начислено</div>
+  </div>
+  <div id="lb-money-rows"></div>
+</section>
+
+<script>
+  const TIER = {
+    1:{cls:'t-diamond',row:'row-diamond',icon:'💎'},
+    2:{cls:'t-gold',row:'row-gold',icon:'🥇'},
+    3:{cls:'t-silver',row:'row-silver',icon:'🥈'},
+    4:{cls:'t-bronze',row:'row-bronze',icon:'🥉'},
+  };
+  const tierChip = t => {
+    if (t==null) return `<span class="text-[#3f5168] text-sm">·</span>`;
+    const m = TIER[t];
+    if (!m) return `<span class="text-[#7e92a8] text-sm font-bold">${t}</span>`;
+    return `<span class="inline-flex items-center gap-1.5 text-sm font-bold ${m.cls}"><span class="text-base leading-none">${m.icon}</span></span>`;
+  };
+  const ava = n => `<span class="w-9 h-9 rounded-full bg-[#0e2036] border border-white/[.08] inline-flex items-center justify-center text-white text-sm font-bold">${n.trim()[0]}</span>`;
+  // dense rank по значению: одинаковое значение → одинаковый тир; 0 → без тира
+  function dense(items, val){
+    const s=[...items].sort((a,b)=>val(b)-val(a));
+    let tier=0, prev=null;
+    s.forEach(p=>{ const v=val(p); if(v<=0){p._t=null;return;} if(v!==prev){tier++;prev=v;} p._t=tier; });
+    return s;
+  }
+  const rowTint = t => (t&&TIER[t])?TIER[t].row:'';
+
+  // ===== сценарии (факт из маркетплейса, 11.06.2026 — Алексей в общем зачёте) =====
+  const SCEN = dense([
+    { n:'Рома', h:'@classDev', role:'СТО', c:4 },
+    { n:'Сергей', h:'@TSL_Sergey', role:'CBDO', c:4 },
+    { n:'Вика', h:'@vika_fin', role:'Финансы', c:3 },
+    { n:'Катя Бауэр', h:'@bauer_tsl', role:'CMO', c:1 },
+    { n:'Макс', h:'@zarakovskiy', role:'Head of Affiliate', c:1 },
+    { n:'Аккаунт-менеджер', h:'@tsl_account_manager', role:'Account', c:1 },
+    { n:'Никита', h:'@tsl_nikita', role:'BizDev', c:1 },
+    { n:'Алексей Громовиков', h:'@SolveSolid', role:'CEO', c:1 },
+    { n:'Саша Вайс', h:'@tslapps_head', role:'Head of TSL Apps', c:0 },
+  ], p=>p.c);
+  document.getElementById('lb-scen-rows').innerHTML = SCEN.map(p => `
+    <div class="lb-row grid sm:grid-cols-[4.5rem_1fr_9rem] gap-4 py-5 items-center border-b border-white/[.05] last:border-0 transition ${rowTint(p._t)}">
+      <div>${tierChip(p._t)}</div>
+      <div class="flex items-center gap-4">${ava(p.n)}<span class="leading-tight"><span class="text-white font-medium text-lg block sm:inline">${p.n}</span> <span class="text-[#54677c] text-xs mono block sm:inline">${p.h} · ${p.role}</span></span></div>
+      <div class="text-right display text-3xl ${p.c?'text-white':'text-[#3f5168]'}">${p.c||'<span class="text-xs font-normal text-[#54677c]">первый впереди</span>'}</div>
+    </div>`).join('');
+
+  // ===== скиллы и артефакты (скиллы — факт; начисления — после adoption) =====
+  const MONEY = dense([
+    { n:'Вика', h:'@vika_fin', role:'Финансы', s:26, sn:'сверки адвертов', a:0, ad:0, money:0 },
+    { n:'Алексей Громовиков', h:'@SolveSolid', role:'CEO', s:0, sn:'', a:3, ad:0, money:0 },
+    { n:'Рома', h:'@classDev', role:'СТО', s:1, sn:'top-offers', a:0, ad:0, money:0 },
+    { n:'Саша Вайс', h:'@tslapps_head', role:'Head of TSL Apps', s:1, sn:'offers', a:0, ad:0, money:0 },
+    { n:'Сергей', h:'@TSL_Sergey', role:'CBDO', s:1, sn:'advert-stop-monitor', a:0, ad:0, money:0 },
+    { n:'Катя Бауэр', h:'@bauer_tsl', role:'CMO', s:0, a:0, ad:0, money:0 },
+    { n:'Макс', h:'@zarakovskiy', role:'Head of Affiliate', s:0, a:0, ad:0, money:0 },
+    { n:'Никита', h:'@tsl_nikita', role:'BizDev', s:0, a:0, ad:0, money:0 },
+    { n:'Аккаунт-менеджер', h:'@tsl_account_manager', role:'Account', s:0, a:0, ad:0, money:0 },
+  ], p=>p.s+p.a);
+  document.getElementById('lb-money-rows').innerHTML = MONEY.map(p => `
+    <div class="lb-row grid sm:grid-cols-[4.5rem_1fr_4.5rem_4.5rem_5.5rem_6.5rem] gap-4 py-5 items-center border-b border-white/[.05] last:border-0 transition ${rowTint(p._t)}">
+      <div>${tierChip(p._t)}</div>
+      <div class="flex items-center gap-4">${ava(p.n)}<span class="leading-tight"><span class="text-white font-medium text-lg block sm:inline">${p.n}</span> <span class="text-[#54677c] text-xs mono block sm:inline">${p.h} · ${p.role}</span>${p.sn?` <span class="text-[#1c8fd0] text-xs mono block sm:inline">/${p.sn}</span>`:''}</span></div>
+      <div class="text-center display text-2xl ${p.s?'text-white':'text-[#3f5168]'}">${p.s||'<span class="text-base font-normal text-[#3f5168]">—</span>'}</div>
+      <div class="text-center display text-2xl ${p.a?'text-white':'text-[#3f5168]'}">${p.a||'<span class="text-base font-normal text-[#3f5168]">—</span>'}</div>
+      <div class="text-center">${p.ad?`<span class="text-[#00B2A9] text-sm font-semibold">×${p.ad}</span>`:'<span class="text-[#3f5168]">—</span>'}</div>
+      <div class="text-right display text-2xl ${p.money?'teal':'text-[#3f5168]'}">${p.money?('$'+p.money):'<span class="text-xs font-normal text-[#54677c]">впереди</span>'}</div>
+    </div>`).join('');
+</script>
+
+<!-- CATALOG -->
+<section id="catalog" class="max-w-5xl mx-auto px-6 sm:px-10 py-24 md:py-32">
+  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">03 — Каталог</div>
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+    <h2 class="display text-4xl md:text-6xl text-white max-w-2xl">Что есть и зачем</h2>
+    <span class="kicker text-[10px] text-[#9fc4ea] mono">из маркетплейса · 14.06.2026</span>
+  </div>
+  <p class="lead text-lg md:text-xl text-[#8aa0b8] max-w-2xl mb-10 leading-snug">Скиллы и артефакты команды: что делает, какая выгода и кто девелопер. Сценарии — на доске выше, без описаний.</p>
+
+  <div id="cat-filter" class="flex flex-wrap gap-2.5 mb-10">
+    <button data-f="all" class="cat-chip chip-on">Все</button>
+    <button data-f="skill" class="cat-chip">Скиллы</button>
+    <button data-f="artifact" class="cat-chip">Артефакты</button>
+  </div>
+
+  <div id="cat-grid" class="grid md:grid-cols-2 gap-5"></div>
+</section>
+
+<script>
+  const CAT = [
+    { type:'skill', name:'top-offers', st:'в маркетплейсе',
+      desc:'Генерирует еженедельный топ пролива офферов — какие сейчас лучше заходят.',
+      val:'Команде не нужно вручную сводить топ — готовый рейтинг каждую неделю.',
+      dn:'Рома', dh:'@classDev' },
+    { type:'skill', name:'offers', st:'в маркетплейсе',
+      desc:'Заводит оффер по карточке сделки: считает тариф удержания, ставку и капу, собирает готовый промт.',
+      val:'Меньше ручного счёта и ошибок в ставке/капе — оффер заводится за минуты.',
+      dn:'Саша Вайс', dh:'@tslapps_head' },
+    { type:'skill', name:'advert-stop-monitor', st:'в маркетплейсе',
+      desc:'Ловит стопы и паузы капы в адверт-чатах BDM → автопост в Slack-канал 00203 и дубль в Telegram.',
+      val:'Ни один стоп капы не теряется — команда узнаёт сразу, без ручного мониторинга.',
+      dn:'Сергей', dh:'@TSL_Sergey' },
+    { type:'skill', name:'Сверки адвертов', st:'26 шт · в маркетплейсе',
+      desc:'Семейство из 26 скиллов сверки с рекламодателями — по кабинету каждого (Affise, Cellxpert, Scaleo, Alanbase…).',
+      sample:'145 Growe · 313 linebet · 603 eBet · 99 7Stars · 28 Bettilt · 429 GreatPlay · …',
+      val:'Сверка перестаёт быть ручной рутиной — 26 адвертов закрываются автоматически.',
+      dn:'Вика', dh:'@vika_fin' },
+    { type:'artifact', name:'GTD', st:'в работе · личный',
+      desc:'Личная система задач: дашборд + Telegram-бот + апп. Входящие, проекты, календарь.',
+      val:'Пример зрелого артефакта на агенте — от идеи до рабочего продукта.',
+      dn:'Алексей Громовиков', dh:'@SolveSolid' },
+    { type:'artifact', name:'Дизайн-бот', st:'live', link:'https://t.me/TSL_Design_Bot',
+      desc:'Telegram-бот генерации дизайна по запросу.',
+      val:'Быстрый дизайн прямо в Telegram — не дожидаясь дизайнера.',
+      dn:'Алексей Громовиков', dh:'@SolveSolid' },
+    { type:'artifact', name:'TSL Cabinet', st:'live', link:'https://lk.tsl-agency.com',
+      desc:'Личный кабинет партнёров TSL.',
+      val:'Внешний продукт компании для партнёров.',
+      dn:'Алексей Громовиков', dh:'@SolveSolid' },
+  ];
+  const catAcc = t => t==='skill' ? {c:'#85B7EB', dot:'#1c8fd0', label:'Скилл'} : {c:'#5fd6cd', dot:'#00B2A9', label:'Артефакт'};
+  const catAva = n => `<span class="w-7 h-7 rounded-full bg-[#0e2036] border border-white/[.1] inline-flex items-center justify-center text-white text-xs font-bold shrink-0">${n.trim()[0]}</span>`;
+  function catCard(it){
+    const a = catAcc(it.type);
+    const title = it.link
+      ? `<a href="${it.link}" target="_blank" rel="noopener" class="text-white hover:text-[#cdd9e6] border-b border-[#005EB8]/40 hover:border-[#00B2A9] transition">${it.name} <span class="teal">↗</span></a>`
+      : it.name;
+    return `<div class="cat-card rounded-xl border border-white/[.07] bg-[#0c1a2e] p-5 hover:border-white/[.14] transition" data-type="${it.type}">
+      <div class="flex items-center justify-between mb-3.5">
+        <span class="inline-flex items-center gap-2 kicker text-[10px] mono" style="color:${a.c}"><span class="w-2 h-2 rounded-sm" style="background:${a.dot}"></span>${a.label}</span>
+        <span class="text-[11px] text-[#637890] mono">${it.st}</span>
+      </div>
+      <div class="mono text-lg text-white mb-2.5">${title}</div>
+      <p class="text-sm text-[#aebfd0] leading-relaxed mb-3">${it.desc}</p>
+      ${it.sample?`<p class="text-xs text-[#54677c] mono mb-3 leading-relaxed">${it.sample}</p>`:''}
+      <div class="kicker text-[10px] text-[#54677c] mono mb-1">Выгода команде</div>
+      <p class="text-[13px] text-[#8aa0b8] leading-relaxed mb-4">${it.val}</p>
+      <div class="hair-soft mb-3.5"></div>
+      <div class="flex items-center gap-2.5">${catAva(it.dn)}<span class="leading-tight text-sm text-[#cdd9e6]">${it.dn} <span class="text-[#54677c] text-xs mono">${it.dh} · девелопер</span></span></div>
+    </div>`;
+  }
+  const catGrid = document.getElementById('cat-grid');
+  function catRender(f){ catGrid.innerHTML = CAT.filter(it => f==='all' || it.type===f).map(catCard).join(''); }
+  catRender('all');
+  document.querySelectorAll('#cat-filter .cat-chip').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('#cat-filter .cat-chip').forEach(x => x.classList.remove('chip-on'));
+      b.classList.add('chip-on');
+      catRender(b.dataset.f);
+    };
+  });
+</script>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="max-w-5xl mx-auto px-6 sm:px-10 py-24 md:py-32">
+  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">04 — Механика</div>
+  <h2 class="display text-4xl md:text-6xl text-white mb-6 max-w-2xl">Как это работает</h2>
+  <p class="lead text-xl md:text-2xl text-[#8aa0b8] max-w-3xl mb-4 leading-snug">Руками заполнять ничего не надо — агент сам регулярно спрашивает про новые сценарии, скиллы и артефакты и обновляет файлы, маркетплейс и лидерборды. <b class="text-white font-medium">Просто отвечай.</b></p>
+
+  <div class="hair-soft my-16"></div>
+
+  <!-- Путь к бонусу — editorial step typography, no boxes -->
+  <div class="lift">
+    <h3 class="text-2xl md:text-3xl font-bold text-white mb-8 tracking-tight">Путь к бонусу</h3>
+    <ol class="space-y-6">
+      <li class="flex items-baseline gap-5">
+        <span class="mono text-sm text-[#3a536e] w-8 shrink-0">01</span>
+        <span class="text-lg md:text-xl text-[#cdd9e6]">Сделал скилл / сценарий / артефакт</span>
+      </li>
+      <li class="flex items-baseline gap-5">
+        <span class="mono text-sm text-[#3a536e] w-8 shrink-0">02</span>
+        <span class="text-lg md:text-xl text-[#cdd9e6]">Пинганул СТО — он деплоит</span>
+      </li>
+      <li class="flex items-baseline gap-5">
+        <span class="mono text-sm text-[#3a536e] w-8 shrink-0">03</span>
+        <span class="text-lg md:text-xl text-[#cdd9e6]">Через месяц смотрим adoption</span>
+      </li>
+      <li class="flex items-baseline gap-5">
+        <span class="mono text-sm text-[#00B2A9] w-8 shrink-0">04</span>
+        <span class="text-lg md:text-xl font-semibold text-[#00B2A9]">≥10 вызовов командой → $100</span>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- REWARDS -->
+<section id="rewards" class="max-w-5xl mx-auto px-6 sm:px-10 py-24 md:py-32">
+  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">05 — Премии</div>
+  <h2 class="display text-4xl md:text-6xl text-white mb-16">Что ты получаешь</h2>
+
+  <div class="hair mb-14"></div>
+
+  <div class="grid md:grid-cols-3 gap-x-12 gap-y-16">
+    <!-- Сценарий -->
+    <div class="lift">
+      <div class="flex items-center gap-2.5 mb-5">
+        <span class="w-2.5 h-2.5 rounded-sm bg-[#E7EBF2]"></span>
+        <span class="kicker text-[11px] text-[#54677c] mono">личное</span>
+      </div>
+      <h3 class="text-3xl font-bold text-white mb-5 tracking-tight">Сценарий</h3>
+      <div class="display text-5xl text-[#E7EBF2] mb-4">Респект</div>
+      <p class="text-base text-[#8aa0b8] leading-relaxed">Место и тир на лидерборде сценариев. Твоя личная экономия времени каждый день.</p>
+    </div>
+
+    <!-- Скилл -->
+    <div class="lift">
+      <div class="flex items-center gap-2.5 mb-5">
+        <span class="w-2.5 h-2.5 rounded-sm bg-[#1c8fd0]"></span>
+        <span class="kicker text-[11px] text-[#54677c] mono">/команда у всех</span>
+      </div>
+      <h3 class="text-3xl font-bold text-white mb-5 tracking-tight">Скилл</h3>
+      <div class="mb-6">
+        <div class="kicker text-[11px] text-[#54677c] mono mb-1.5">Сам по себе</div>
+        <div class="text-base text-[#aebfd0]">лидерборд + респект, не оплачивается</div>
+      </div>
+      <div>
+        <div class="kicker text-[11px] text-[#54677c] mono mb-1.5">Пользуется команда</div>
+        <div class="display text-5xl teal mb-2">$100</div>
+        <div class="text-sm text-[#637890]">≥10 вызовов не из любознательности</div>
+      </div>
+    </div>
+
+    <!-- Артефакт -->
+    <div class="lift">
+      <div class="flex items-center gap-2.5 mb-5">
+        <span class="w-2.5 h-2.5 rounded-sm bg-[#00B2A9]"></span>
+        <span class="kicker text-[11px] text-[#54677c] mono">продукт</span>
+      </div>
+      <h3 class="text-3xl font-bold text-white mb-5 tracking-tight">Артефакт</h3>
+      <div class="mb-6">
+        <div class="kicker text-[11px] text-[#54677c] mono mb-1.5">Сам по себе</div>
+        <div class="text-base text-[#aebfd0]">лидерборд + респект, не оплачивается</div>
+      </div>
+      <div>
+        <div class="kicker text-[11px] text-[#54677c] mono mb-1.5">Пользуется команда</div>
+        <div class="display text-5xl teal mb-2">$100</div>
+        <div class="text-sm text-[#637890]">≥10 использований командой</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- БАЗА ПРО АГЕНТОВ (видео) -->
+<section id="base" class="max-w-4xl mx-auto px-6 sm:px-10 py-24 md:py-32">
+  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">06 — База про агентов</div>
+  <h2 class="display text-4xl md:text-6xl text-white mb-6 max-w-2xl">База про агентов</h2>
+  <p class="lead text-lg md:text-xl text-[#8aa0b8] max-w-2xl mb-12 leading-snug">Алексей за ~15 минут: что такое твой агент, сценарии и скиллы, вайб-кодинг, правила. <b class="text-white font-medium">Здесь же — вся терминология.</b></p>
+  <div class="rounded-2xl overflow-hidden border border-white/[.08] bg-[#0e2036]" style="position:relative;padding-bottom:56.25%;height:0;">
+    <iframe src="https://www.loom.com/embed/8b05bf9e10cc4ca1b0f103a580dc38db" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t border-white/[.06] mt-16">
+  <div class="max-w-5xl mx-auto px-6 sm:px-10 py-12 flex items-center justify-center">
+    <img src="assets/Logo_TSL_dark_sm.png" alt="TSL" class="h-6 w-auto opacity-60">
+  </div>
+</footer>
+
+</body>
+</html>
