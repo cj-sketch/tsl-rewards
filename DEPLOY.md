@@ -3,6 +3,29 @@
 Статический сайт за nginx (non-root), полностью изолированный контейнер.
 Нужен только установленный Docker + плагин Compose.
 
+## Получить код на хост
+
+**Репо публичный** — просто:
+```bash
+git clone https://github.com/cj-sketch/tsl-rewards.git
+```
+
+**Репо приватный** — по read-only deploy-key (приватный ключ — в `credentials.md`, секция «GitHub Deploy Key — tsl-rewards»):
+```bash
+# 1) положить приватный ключ
+install -m 600 /dev/stdin ~/.ssh/tsl_rewards_deploy   # вставить ключ, Ctrl-D
+# 2) ssh-алиас
+cat >> ~/.ssh/config <<'EOF'
+Host github-tsl-rewards
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/tsl_rewards_deploy
+  IdentitiesOnly yes
+EOF
+# 3) клон по алиасу
+git clone git@github-tsl-rewards:cj-sketch/tsl-rewards.git
+```
+
 ## Запуск
 ```bash
 docker compose up -d --build
