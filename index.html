@@ -80,9 +80,8 @@
       <span class="text-[#7e92a8] text-[11px] kicker font-medium hidden sm:inline mono">Сценарии · Скиллы · Артефакты</span>
     </a>
     <div class="hidden md:flex items-center gap-7 text-[13px] text-[#7e92a8]">
-      <a href="#lb-scen" class="hover:text-[#1c8fd0] transition">Лидерборды</a>
+      <a href="#lb" class="hover:text-[#1c8fd0] transition">Лидерборды</a>
       <a href="#catalog" class="hover:text-[#1c8fd0] transition">Каталог</a>
-      <a href="#how" class="hover:text-[#1c8fd0] transition">Как работает</a>
       <a href="#rewards" class="hover:text-[#1c8fd0] transition">Премии</a>
       <a href="#base" class="hover:text-[#1c8fd0] transition">База про агентов</a>
     </div>
@@ -109,34 +108,32 @@
   <p class="lead text-base md:text-lg text-[#637890] mt-5 max-w-2xl">≥10 вызовов не из любознательности, в течение месяца после деплоя.</p>
 </section>
 
-<!-- LEADERBOARD: SCENARIOS -->
-<section id="lb-scen" class="max-w-5xl mx-auto px-6 sm:px-10 py-24 md:py-32">
-  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">01 — Лидерборд сценариев</div>
-  <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
-    <h2 class="display text-4xl md:text-6xl text-white max-w-xl">Респект-доска</h2>
+<!-- LEADERBOARDS (parallel) -->
+<section id="lb" class="max-w-5xl mx-auto px-6 sm:px-10 py-16 md:py-24">
+  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">01 — Лидерборды</div>
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-12">
+    <h2 class="display text-4xl md:text-6xl text-white">Доски</h2>
     <span class="kicker text-[10px] text-[#9fc4ea] mono">из маркетплейса · 14.06.2026</span>
   </div>
-  <p class="lead text-lg md:text-xl text-[#8aa0b8] max-w-2xl mb-14 leading-snug">Сколько личных автоматизаций у каждого. Распределение честное — должность не влияет.</p>
 
-  <div class="hidden sm:grid grid-cols-[4.5rem_1fr_9rem] gap-4 pb-4 kicker text-[10px] text-[#54677c] mono border-b border-white/[.07]">
-    <div>Тир</div><div>Сотрудник</div><div class="text-right">Сценариев</div>
+  <div class="grid lg:grid-cols-2 gap-x-12 gap-y-16">
+    <div>
+      <div class="flex items-baseline justify-between border-b border-white/[.07] pb-3 mb-1">
+        <h3 class="text-xl md:text-2xl font-bold text-white tracking-tight">Респект-доска</h3>
+        <span class="kicker text-[10px] text-[#54677c] mono">сценарии · личное</span>
+      </div>
+      <div id="lb-scen-rows"></div>
+      <p class="text-xs text-[#54677c] mt-4 leading-relaxed">Личные автоматизации. Должность не влияет — только респект.</p>
+    </div>
+    <div>
+      <div class="flex items-baseline justify-between border-b border-white/[.07] pb-3 mb-1">
+        <h3 class="text-xl md:text-2xl font-bold text-white tracking-tight">Отдано команде</h3>
+        <span class="kicker text-[10px] text-[#54677c] mono">скиллы / артефакты</span>
+      </div>
+      <div id="lb-money-rows"></div>
+      <p class="text-xs text-[#54677c] mt-4 leading-relaxed">Используется командой (≥10 вызовов) → <b class="teal">$100</b>.</p>
+    </div>
   </div>
-  <div id="lb-scen-rows"></div>
-</section>
-
-<!-- LEADERBOARD: SKILLS & ARTIFACTS -->
-<section id="lb-money" class="max-w-5xl mx-auto px-6 sm:px-10 py-24 md:py-32">
-  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">02 — Лидерборд скиллов и артефактов</div>
-  <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
-    <h2 class="display text-4xl md:text-6xl text-white max-w-2xl">Отдано команде</h2>
-    <span class="kicker text-[10px] text-[#9fc4ea] mono">скиллы — факт</span>
-  </div>
-  <p class="lead text-lg md:text-xl text-[#8aa0b8] max-w-2xl mb-14 leading-snug">Используется командой (≥10 вызовов) → <b class="teal font-bold">$100</b> в колонку «Начислено».</p>
-
-  <div class="hidden sm:grid grid-cols-[4.5rem_1fr_4.5rem_4.5rem_5.5rem_6.5rem] gap-4 pb-4 kicker text-[10px] text-[#54677c] mono border-b border-white/[.07]">
-    <div>Тир</div><div>Сотрудник</div><div class="text-center">Скиллы</div><div class="text-center">Артеф.</div><div class="text-center">Adoption</div><div class="text-right">Начислено</div>
-  </div>
-  <div id="lb-money-rows"></div>
 </section>
 
 <script>
@@ -150,10 +147,9 @@
     if (t==null) return `<span class="text-[#3f5168] text-sm">·</span>`;
     const m = TIER[t];
     if (!m) return `<span class="text-[#7e92a8] text-sm font-bold">${t}</span>`;
-    return `<span class="inline-flex items-center gap-1.5 text-sm font-bold ${m.cls}"><span class="text-base leading-none">${m.icon}</span></span>`;
+    return `<span class="inline-flex items-center text-sm font-bold ${m.cls}"><span class="text-base leading-none">${m.icon}</span></span>`;
   };
-  const ava = n => `<span class="w-9 h-9 rounded-full bg-[#0e2036] border border-white/[.08] inline-flex items-center justify-center text-white text-sm font-bold">${n.trim()[0]}</span>`;
-  // dense rank по значению: одинаковое значение → одинаковый тир; 0 → без тира
+  const avaS = n => `<span class="w-8 h-8 rounded-full bg-[#0e2036] border border-white/[.08] inline-flex items-center justify-center text-white text-xs font-bold shrink-0">${n.trim()[0]}</span>`;
   function dense(items, val){
     const s=[...items].sort((a,b)=>val(b)-val(a));
     let tier=0, prev=null;
@@ -162,7 +158,6 @@
   }
   const rowTint = t => (t&&TIER[t])?TIER[t].row:'';
 
-  // ===== сценарии (факт из маркетплейса, 11.06.2026 — Алексей в общем зачёте) =====
   const SCEN = dense([
     { n:'Рома', h:'@classDev', role:'СТО', c:4 },
     { n:'Сергей', h:'@TSL_Sergey', role:'CBDO', c:4 },
@@ -175,38 +170,37 @@
     { n:'Саша Вайс', h:'@tslapps_head', role:'Head of TSL Apps', c:0 },
   ], p=>p.c);
   document.getElementById('lb-scen-rows').innerHTML = SCEN.map(p => `
-    <div class="lb-row grid sm:grid-cols-[4.5rem_1fr_9rem] gap-4 py-5 items-center border-b border-white/[.05] last:border-0 transition ${rowTint(p._t)}">
+    <div class="lb-row grid grid-cols-[1.5rem_1fr_auto] gap-3 py-3 items-center border-b border-white/[.05] last:border-0 transition ${rowTint(p._t)}">
       <div>${tierChip(p._t)}</div>
-      <div class="flex items-center gap-4">${ava(p.n)}<span class="leading-tight"><span class="text-white font-medium text-lg block sm:inline">${p.n}</span> <span class="text-[#54677c] text-xs mono block sm:inline">${p.h} · ${p.role}</span></span></div>
-      <div class="text-right display text-3xl ${p.c?'text-white':'text-[#3f5168]'}">${p.c||'<span class="text-xs font-normal text-[#54677c]">первый впереди</span>'}</div>
+      <div class="flex items-center gap-3 min-w-0">${avaS(p.n)}<span class="leading-tight min-w-0"><span class="text-white font-medium text-sm block truncate">${p.n}</span><span class="text-[#54677c] text-[11px] mono block truncate">${p.h} · ${p.role}</span></span></div>
+      <div class="text-right display text-2xl ${p.c?'text-white':'text-[#3f5168]'}">${p.c||'<span class="text-[11px] font-normal text-[#54677c]">—</span>'}</div>
     </div>`).join('');
 
-  // ===== скиллы и артефакты (скиллы — факт; начисления — после adoption) =====
   const MONEY = dense([
-    { n:'Вика', h:'@vika_fin', role:'Финансы', s:26, sn:'сверки адвертов', a:0, ad:0, money:0 },
-    { n:'Алексей Громовиков', h:'@SolveSolid', role:'CEO', s:0, sn:'', a:3, ad:0, money:0 },
-    { n:'Рома', h:'@classDev', role:'СТО', s:1, sn:'top-offers', a:0, ad:0, money:0 },
-    { n:'Саша Вайс', h:'@tslapps_head', role:'Head of TSL Apps', s:1, sn:'offers', a:0, ad:0, money:0 },
-    { n:'Сергей', h:'@TSL_Sergey', role:'CBDO', s:1, sn:'advert-stop-monitor', a:0, ad:0, money:0 },
+    { n:'Вика', h:'@vika_fin', role:'Финансы', s:26, a:0, ad:0, money:0 },
+    { n:'Алексей Громовиков', h:'@SolveSolid', role:'CEO', s:0, a:3, ad:0, money:0 },
+    { n:'Рома', h:'@classDev', role:'СТО', s:1, a:0, ad:0, money:0 },
+    { n:'Саша Вайс', h:'@tslapps_head', role:'Head of TSL Apps', s:1, a:0, ad:0, money:0 },
+    { n:'Сергей', h:'@TSL_Sergey', role:'CBDO', s:1, a:0, ad:0, money:0 },
     { n:'Катя Бауэр', h:'@bauer_tsl', role:'CMO', s:0, a:0, ad:0, money:0 },
     { n:'Макс', h:'@zarakovskiy', role:'Head of Affiliate', s:0, a:0, ad:0, money:0 },
     { n:'Никита', h:'@tsl_nikita', role:'BizDev', s:0, a:0, ad:0, money:0 },
     { n:'Аккаунт-менеджер', h:'@tsl_account_manager', role:'Account', s:0, a:0, ad:0, money:0 },
   ], p=>p.s+p.a);
-  document.getElementById('lb-money-rows').innerHTML = MONEY.map(p => `
-    <div class="lb-row grid sm:grid-cols-[4.5rem_1fr_4.5rem_4.5rem_5.5rem_6.5rem] gap-4 py-5 items-center border-b border-white/[.05] last:border-0 transition ${rowTint(p._t)}">
+  document.getElementById('lb-money-rows').innerHTML = MONEY.map(p => {
+    const tot = p.s + p.a;
+    const tag = p.money ? `<span class="teal text-[11px] font-semibold">$${p.money}</span>` : (p.ad?`<span class="text-[#00B2A9] text-[11px]">×${p.ad}</span>`:`<span class="text-[#54677c] text-[11px]">впереди</span>`);
+    return `
+    <div class="lb-row grid grid-cols-[1.5rem_1fr_auto] gap-3 py-3 items-center border-b border-white/[.05] last:border-0 transition ${rowTint(p._t)}">
       <div>${tierChip(p._t)}</div>
-      <div class="flex items-center gap-4">${ava(p.n)}<span class="leading-tight"><span class="text-white font-medium text-lg block sm:inline">${p.n}</span> <span class="text-[#54677c] text-xs mono block sm:inline">${p.h} · ${p.role}</span>${p.sn?` <span class="text-[#1c8fd0] text-xs mono block sm:inline">/${p.sn}</span>`:''}</span></div>
-      <div class="text-center display text-2xl ${p.s?'text-white':'text-[#3f5168]'}">${p.s||'<span class="text-base font-normal text-[#3f5168]">—</span>'}</div>
-      <div class="text-center display text-2xl ${p.a?'text-white':'text-[#3f5168]'}">${p.a||'<span class="text-base font-normal text-[#3f5168]">—</span>'}</div>
-      <div class="text-center">${p.ad?`<span class="text-[#00B2A9] text-sm font-semibold">×${p.ad}</span>`:'<span class="text-[#3f5168]">—</span>'}</div>
-      <div class="text-right display text-2xl ${p.money?'teal':'text-[#3f5168]'}">${p.money?('$'+p.money):'<span class="text-xs font-normal text-[#54677c]">впереди</span>'}</div>
-    </div>`).join('');
+      <div class="flex items-center gap-3 min-w-0">${avaS(p.n)}<span class="leading-tight min-w-0"><span class="text-white font-medium text-sm block truncate">${p.n}</span><span class="text-[#54677c] text-[11px] mono block truncate">${p.h} · ${p.role}</span></span></div>
+      <div class="text-right leading-tight"><div class="display text-2xl ${tot?'text-white':'text-[#3f5168]'}">${tot||'—'}</div><div>${tag}</div></div>
+    </div>`; }).join('');
 </script>
 
 <!-- CATALOG -->
 <section id="catalog" class="max-w-5xl mx-auto px-6 sm:px-10 py-24 md:py-32">
-  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">03 — Каталог</div>
+  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">02 — Каталог</div>
   <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
     <h2 class="display text-4xl md:text-6xl text-white max-w-2xl">Что есть и зачем</h2>
     <span class="kicker text-[10px] text-[#9fc4ea] mono">из маркетплейса · 14.06.2026</span>
@@ -287,95 +281,70 @@
   });
 </script>
 
-<!-- HOW IT WORKS -->
-<section id="how" class="max-w-5xl mx-auto px-6 sm:px-10 py-24 md:py-32">
-  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">04 — Механика</div>
-  <h2 class="display text-4xl md:text-6xl text-white mb-12 max-w-2xl">Как это работает</h2>
+<!-- REWARDS + PATH (merged) -->
+<section id="rewards" class="max-w-5xl mx-auto px-6 sm:px-10 py-20 md:py-28">
+  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">03 — Премии</div>
+  <h2 class="display text-4xl md:text-6xl text-white mb-6 max-w-2xl">Что получаешь — и как</h2>
+  <p class="lead text-lg md:text-xl text-[#8aa0b8] max-w-2xl mb-16 leading-snug">Три типа результата. Платится только командная ценность.</p>
 
-  <!-- Путь к бонусу — editorial step typography, no boxes -->
-  <div class="lift">
-    <h3 class="text-2xl md:text-3xl font-bold text-white mb-8 tracking-tight">Путь к бонусу</h3>
-    <ol class="space-y-6">
-      <li class="flex items-baseline gap-5">
-        <span class="mono text-sm text-[#3a536e] w-8 shrink-0">01</span>
-        <span class="text-lg md:text-xl text-[#cdd9e6]">Сделал скилл / сценарий / артефакт</span>
-      </li>
-      <li class="flex items-baseline gap-5">
-        <span class="mono text-sm text-[#3a536e] w-8 shrink-0">02</span>
-        <span class="text-lg md:text-xl text-[#cdd9e6]">Пинганул СТО — он деплоит</span>
-      </li>
-      <li class="flex items-baseline gap-5">
-        <span class="mono text-sm text-[#3a536e] w-8 shrink-0">03</span>
-        <span class="text-lg md:text-xl text-[#cdd9e6]">Через месяц смотрим adoption</span>
-      </li>
-      <li class="flex items-baseline gap-5">
-        <span class="mono text-sm text-[#00B2A9] w-8 shrink-0">04</span>
-        <span class="text-lg md:text-xl font-semibold text-[#00B2A9]">≥10 вызовов командой → $100</span>
-      </li>
-    </ol>
-  </div>
-</section>
-
-<!-- REWARDS -->
-<section id="rewards" class="max-w-5xl mx-auto px-6 sm:px-10 py-24 md:py-32">
-  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">05 — Премии</div>
-  <h2 class="display text-4xl md:text-6xl text-white mb-16">Что ты получаешь</h2>
-
-  <div class="hair mb-14"></div>
-
-  <div class="grid md:grid-cols-3 gap-x-12 gap-y-16">
-    <!-- Сценарий -->
+  <div class="grid md:grid-cols-3 gap-x-12 gap-y-12 mb-20">
     <div class="lift">
       <div class="flex items-center gap-2.5 mb-5">
         <span class="w-2.5 h-2.5 rounded-sm bg-[#E7EBF2]"></span>
         <span class="kicker text-[11px] text-[#54677c] mono">личное</span>
       </div>
-      <h3 class="text-3xl font-bold text-white mb-5 tracking-tight">Сценарий</h3>
-      <div class="display text-5xl text-[#E7EBF2] mb-4">Респект</div>
-      <p class="text-base text-[#8aa0b8] leading-relaxed">Место и тир на лидерборде сценариев. Твоя личная экономия времени каждый день.</p>
+      <h3 class="text-3xl font-bold text-white mb-4 tracking-tight">Сценарий</h3>
+      <div class="display text-4xl text-[#E7EBF2] mb-3">Респект</div>
+      <p class="text-base text-[#8aa0b8] leading-relaxed">Место и тир на респект-доске. Личная экономия времени каждый день.</p>
     </div>
-
-    <!-- Скилл -->
     <div class="lift">
       <div class="flex items-center gap-2.5 mb-5">
         <span class="w-2.5 h-2.5 rounded-sm bg-[#1c8fd0]"></span>
         <span class="kicker text-[11px] text-[#54677c] mono">/команда у всех</span>
       </div>
-      <h3 class="text-3xl font-bold text-white mb-5 tracking-tight">Скилл</h3>
-      <div class="mb-6">
-        <div class="kicker text-[11px] text-[#54677c] mono mb-1.5">Сам по себе</div>
-        <div class="text-base text-[#aebfd0]">лидерборд + респект, не оплачивается</div>
-      </div>
-      <div>
-        <div class="kicker text-[11px] text-[#54677c] mono mb-1.5">Пользуется команда</div>
-        <div class="display text-5xl teal mb-2">$100</div>
-        <div class="text-sm text-[#637890]">≥10 вызовов не из любознательности</div>
-      </div>
+      <h3 class="text-3xl font-bold text-white mb-4 tracking-tight">Скилл</h3>
+      <div class="text-base text-[#aebfd0] mb-5 leading-relaxed">Сам по себе — лидерборд + респект, не оплачивается.</div>
+      <div class="display text-4xl teal mb-1">$100</div>
+      <div class="text-sm text-[#637890]">если им пользуется команда</div>
     </div>
-
-    <!-- Артефакт -->
     <div class="lift">
       <div class="flex items-center gap-2.5 mb-5">
         <span class="w-2.5 h-2.5 rounded-sm bg-[#00B2A9]"></span>
         <span class="kicker text-[11px] text-[#54677c] mono">продукт</span>
       </div>
-      <h3 class="text-3xl font-bold text-white mb-5 tracking-tight">Артефакт</h3>
-      <div class="mb-6">
-        <div class="kicker text-[11px] text-[#54677c] mono mb-1.5">Сам по себе</div>
-        <div class="text-base text-[#aebfd0]">лидерборд + респект, не оплачивается</div>
-      </div>
-      <div>
-        <div class="kicker text-[11px] text-[#54677c] mono mb-1.5">Пользуется команда</div>
-        <div class="display text-5xl teal mb-2">$100</div>
-        <div class="text-sm text-[#637890]">≥10 использований командой</div>
-      </div>
+      <h3 class="text-3xl font-bold text-white mb-4 tracking-tight">Артефакт</h3>
+      <div class="text-base text-[#aebfd0] mb-5 leading-relaxed">Сам по себе — лидерборд + респект, не оплачивается.</div>
+      <div class="display text-4xl teal mb-1">$100</div>
+      <div class="text-sm text-[#637890]">если им пользуется команда</div>
+    </div>
+  </div>
+
+  <div class="hair mb-12"></div>
+
+  <h3 class="kicker text-[11px] text-[#54677c] mono mb-8">Путь к $100</h3>
+  <div class="grid sm:grid-cols-4 gap-x-8 gap-y-8">
+    <div class="flex sm:block items-baseline gap-4">
+      <span class="mono text-sm text-[#3a536e]">01</span>
+      <p class="text-base text-[#cdd9e6] sm:mt-3 leading-snug">Сделал скилл / сценарий / артефакт</p>
+    </div>
+    <div class="flex sm:block items-baseline gap-4">
+      <span class="mono text-sm text-[#3a536e]">02</span>
+      <p class="text-base text-[#cdd9e6] sm:mt-3 leading-snug">Пинганул СТО — он деплоит</p>
+    </div>
+    <div class="flex sm:block items-baseline gap-4">
+      <span class="mono text-sm text-[#3a536e]">03</span>
+      <p class="text-base text-[#cdd9e6] sm:mt-3 leading-snug">Через месяц смотрим adoption</p>
+    </div>
+    <div class="flex sm:block items-baseline gap-4">
+      <span class="mono text-sm text-[#00B2A9]">04</span>
+      <p class="text-base font-semibold text-[#00B2A9] sm:mt-3 leading-snug">≥10 вызовов командой → $100</p>
     </div>
   </div>
 </section>
 
 <!-- БАЗА ПРО АГЕНТОВ (видео) -->
 <section id="base" class="max-w-4xl mx-auto px-6 sm:px-10 py-24 md:py-32">
-  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">06 — База про агентов</div>
+  <div class="kicker text-[12px] text-[#5fb3e6] mb-5 mono">04 — База про агентов</div>
   <h2 class="display text-4xl md:text-6xl text-white mb-6 max-w-2xl">База про агентов</h2>
   <p class="lead text-lg md:text-xl text-[#8aa0b8] max-w-2xl mb-12 leading-snug">Алексей за ~15 минут: что такое твой агент, сценарии и скиллы, вайб-кодинг, правила. <b class="text-white font-medium">Здесь же — вся терминология.</b></p>
   <div class="rounded-2xl overflow-hidden border border-white/[.08] bg-[#0e2036]" style="position:relative;padding-bottom:56.25%;height:0;">
