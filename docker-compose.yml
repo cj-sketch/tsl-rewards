@@ -1,0 +1,43 @@
+name: tsl-rewards
+
+services:
+  web:
+    build: .
+    image: tsl-rewards:latest
+    container_name: tsl-rewards
+    restart: unless-stopped
+
+    # наружу — только этот порт (host:container).
+    # поменять host-порт: TSL_REWARDS_PORT=9000 docker compose up -d
+    ports:
+      - "${TSL_REWARDS_PORT:-8080}:8080"
+
+    # изолированная bridge-сеть только под этот проект
+    networks:
+      - tsl-rewards-net
+
+    # ---------- изоляция / харднинг ----------
+    read_only: true                 # корневая ФС только для чтения
+    tmpfs:                          # nginx-у нужны эти пути на запись
+      - /tmp
+      - /var/cache/nginx
+      - /var/run
+    security_opt:
+      - no-new-privileges:true      # процесс не может повысить привилегии
+    cap_drop:
+      - ALL                         # снять все Linux-capabilities
+    mem_limit: 128m                 # потолок памяти
+    cpus: 0.5                       # потолок CPU
+    pids_limit: 64                  # потолок числа процессов
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  tsl-rewards-net:
+    name: tsl-rewards-net
+    driver: bridge
