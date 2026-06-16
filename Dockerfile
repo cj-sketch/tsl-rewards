@@ -1,11 +1,11 @@
-# TSL Rewards — статический сайт за nginx (non-root, изолированно)
-FROM nginxinc/nginx-unprivileged:stable-alpine
-
-# конфиг nginx: listen 8080, заголовки безопасности, gzip, кэш статики
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# статика проекта
-COPY --chown=nginx:nginx index.html /usr/share/nginx/html/index.html
-COPY --chown=nginx:nginx assets/     /usr/share/nginx/html/assets/
-
+# TSL Rewards — гейт доступа: Python отдаёт статику только авторизованным сотрудникам
+FROM python:3.12-alpine
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY auth_app.py /app/auth_app.py
+COPY index.html /app/site/index.html
+COPY assets /app/site/assets
+RUN adduser -D -u 10001 app
+USER app
 EXPOSE 8080
+CMD ["python", "auth_app.py"]
