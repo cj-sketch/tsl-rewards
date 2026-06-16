@@ -101,8 +101,13 @@ class H(BaseHTTPRequestHandler):
             err = '<p class=e>Этой телеги нет в списке команды — обратись к CEO.</p>' if parse_qs(u.query).get("e") else ""
             return self._send(200, LOGIN.replace("__BOT__", BOT_NAME).replace("__ERR__", err).encode())
         if path == "/auth/telegram":
-            username = verify_telegram(parse_qs(u.query))
-            if not username or username not in ALLOWED:
+            qs = parse_qs(u.query)
+            username = verify_telegram(qs)
+            raw_user = (qs.get("username") or [""])[0]
+            uid = (qs.get("id") or [""])[0]
+            allowed = bool(username) and username in ALLOWED
+            print(f"[auth] id={uid} username={raw_user!r} verified={username!r} allowed={allowed}", flush=True)
+            if not allowed:
                 return self._send(302, extra=[("Location", "/login?e=1")])
             ck = f"{COOKIE}={make_cookie(username)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age={TTL}"
             return self._send(302, extra=[("Location", "/"), ("Set-Cookie", ck)])
