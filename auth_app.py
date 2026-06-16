@@ -56,6 +56,8 @@ def verify_telegram(qs):
 
 LOGIN = """<!doctype html><html lang=ru><head><meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1"><title>TSL · вход</title>
+<link rel=icon type="image/png" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/favicon.ico">
 <style>html,body{margin:0;height:100%}body{background:#091321;color:#aebfd0;
 font-family:system-ui,-apple-system,'Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center}
 .c{text-align:center;max-width:430px;padding:24px}h1{color:#fff;font-size:30px;margin:0 0 14px;letter-spacing:-.02em}
@@ -74,11 +76,13 @@ class H(BaseHTTPRequestHandler):
         pass
 
     def _send(self, code, body=b"", ctype="text/html; charset=utf-8", extra=None):
+        extra = extra or []
         self.send_response(code)
         self.send_header("Content-Type", ctype)
-        self.send_header("Cache-Control", "no-store")
+        if not any(k.lower() == "cache-control" for k, _ in extra):
+            self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
-        for k, v in (extra or []):
+        for k, v in extra:
             self.send_header(k, v)
         self.end_headers()
         if body:
@@ -104,6 +108,15 @@ class H(BaseHTTPRequestHandler):
             return self._send(302, extra=[("Location", "/"), ("Set-Cookie", ck)])
         if path == "/logout":
             return self._send(302, extra=[("Location", "/login"), ("Set-Cookie", f"{COOKIE}=; Path=/; Max-Age=0")])
+        # фавикон/лого TSL — публично (это не данные, а бренд-аватар): иконка во вкладке и на /login
+        if path in ("/favicon.ico", "/assets/Logo_TSL_avatar.png"):
+            fp = os.path.join(SITE, "assets", "Logo_TSL_avatar.png")
+            try:
+                with open(fp, "rb") as f:
+                    return self._send(200, f.read(), "image/png",
+                                      extra=[("Cache-Control", "public, max-age=86400")])
+            except OSError:
+                pass
         # всё остальное — статика, только для авторизованных
         if not self._user():
             return self._send(302, extra=[("Location", "/login")])
