@@ -5,6 +5,7 @@ WORKDIR /app
 COPY auth_app.py /app/auth_app.py
 COPY index.html /app/site/index.html
 COPY assets /app/site/assets
+COPY data.json /app/site/data.json
 RUN adduser -D -u 10001 app
 USER app
 EXPOSE 8080
