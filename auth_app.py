@@ -56,8 +56,8 @@ def verify_telegram(qs):
 
 LOGIN = """<!doctype html><html lang=ru><head><meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1"><title>TSL · вход</title>
-<link rel=icon type="image/png" href="/favicon.ico">
-<link rel="apple-touch-icon" href="/favicon.ico">
+<link rel=icon type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon-180.png">
 <style>html,body{margin:0;height:100%}body{background:#091321;color:#aebfd0;
 font-family:system-ui,-apple-system,'Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center}
 .c{text-align:center;max-width:430px;padding:24px}h1{color:#fff;font-size:30px;margin:0 0 14px;letter-spacing:-.02em}
@@ -108,15 +108,15 @@ class H(BaseHTTPRequestHandler):
             return self._send(302, extra=[("Location", "/"), ("Set-Cookie", ck)])
         if path == "/logout":
             return self._send(302, extra=[("Location", "/login"), ("Set-Cookie", f"{COOKIE}=; Path=/; Max-Age=0")])
-        # фавикон/лого TSL — публично (это не данные, а бренд-аватар): иконка во вкладке и на /login
-        if path in ("/favicon.ico", "/assets/Logo_TSL_avatar.png"):
-            fp = os.path.join(SITE, "assets", "Logo_TSL_avatar.png")
-            try:
+        # фавиконки/лого TSL — публично (не данные, а бренд-иконка): видна во вкладке и на /login
+        if path == "/favicon.ico" or path == "/assets/Logo_TSL_avatar.png" \
+                or (path.startswith("/assets/favicon-") and path.endswith(".png")):
+            name = "favicon-32.png" if path == "/favicon.ico" else os.path.basename(path)
+            fp = os.path.join(SITE, "assets", name)
+            if os.path.isfile(fp):
                 with open(fp, "rb") as f:
                     return self._send(200, f.read(), "image/png",
-                                      extra=[("Cache-Control", "public, max-age=86400")])
-            except OSError:
-                pass
+                                      extra=[("Cache-Control", "public, max-age=3600")])
         # всё остальное — статика, только для авторизованных
         if not self._user():
             return self._send(302, extra=[("Location", "/login")])
