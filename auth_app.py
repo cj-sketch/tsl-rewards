@@ -112,11 +112,11 @@ class H(BaseHTTPRequestHandler):
             ck = f"{COOKIE}={make_cookie(username)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age={TTL}"
             # куку ставим на обычной 200-странице, а не на 302: часть браузеров в строгих
             # privacy-режимах роняют Set-Cookie на редиректе. Затем сами уходим на /.
-            body = (b"<!doctype html><meta charset=utf-8><title>TSL</title>"
-                    b"<meta http-equiv=refresh content=\"0;url=/\">"
-                    b"<script>location.replace('/')</script>"
-                    b"<body style=\"margin:0;background:#091321;color:#8aa0b8;font-family:system-ui,-apple-system,sans-serif\">"
-                    b"<p style=\"padding:24px\">Входим\xe2\x80\xa6 <a style=\"color:#5fd6cd\" href=\"/\">на сайт</a></p></body>")
+            body = ("<!doctype html><meta charset=utf-8><title>TSL</title>"
+                    "<meta http-equiv=refresh content=\"0;url=/\">"
+                    "<script>location.replace('/')</script>"
+                    "<body style=\"margin:0;background:#091321;color:#8aa0b8;font-family:system-ui,-apple-system,sans-serif\">"
+                    "<p style=\"padding:24px\">Входим… <a style=\"color:#5fd6cd\" href=\"/\">на сайт</a></p></body>").encode("utf-8")
             return self._send(200, body, "text/html; charset=utf-8", extra=[("Set-Cookie", ck)])
         if path == "/logout":
             return self._send(302, extra=[("Location", "/login"), ("Set-Cookie", f"{COOKIE}=; Path=/; Max-Age=0")])
