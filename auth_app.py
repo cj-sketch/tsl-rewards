@@ -66,7 +66,7 @@ p{color:#8aa0b8;line-height:1.55}.e{color:#f0888a;margin-top:16px;font-size:14px
 <p>Лидерборды и каталог скиллов — только для сотрудников TSL. Войди рабочим Telegram.</p>
 <div class=w><script async src="https://telegram.org/js/telegram-widget.js?22"
  data-telegram-login="__BOT__" data-size="large" data-userpic="false"
- data-auth-url="/auth/telegram" data-request-access="write"></script></div>
+ data-auth-url="/auth/telegram"></script></div>
 __ERR__</div></body></html>"""
 
 
